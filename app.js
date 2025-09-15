@@ -1,0 +1,22 @@
+import express from "express";
+
+
+const app=express();
+
+
+
+app.get("/",(req,res)=>{
+    res.send("Hello World")
+})
+
+const PORT=3000;
+
+
+app.listen(PORT,(err)=>{
+    if(err)
+    {
+        console.log("error");
+    }
+
+    console.log(`App is running at localhost:${PORT}`);
+})
