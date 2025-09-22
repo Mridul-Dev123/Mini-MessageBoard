@@ -1,6 +1,10 @@
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import db from "./db/queries.js";
+import dotenv from "dotenv";
+dotenv.config();
+
 
 
 const app=express();
@@ -14,25 +18,19 @@ app.set("view engine", "ejs");
 
 
 
-const messages=[
-    {
-        text:"Hi there!",
-        user:"Amando",
-        added: new Date()
-    },
-    {
-        text: "Hello World!",
-        user:"Charles",
-        added: new Date()
-    }
-];
 
 
 
 
 
 app.get("/",(req,res)=>{
-    res.render('index',{messages});
+
+    db.getAllMessages()
+    .then((messages)=>{res.render('index',{messages});})
+    .catch((err)=>{
+        res.send(`Some error occured ${err}`)
+    })
+    
 })
 
 app.get("/new",(req,res)=>{
@@ -42,8 +40,9 @@ app.get("/new",(req,res)=>{
 app.post("/new",(req, res)=>{
     const {text,user}=req.body;
 
-    messages.push({user,text,added:new Date()});
-    res.redirect('/');
+   db.addMessage(user,text)
+   .then((kk)=>{res.redirect("/")})
+   .catch((err)=>res.send(`Some error occured while storing ${err}`));
     
 })
 
